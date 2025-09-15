@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 
 // Data types
 export interface AttendanceRecord {
@@ -196,6 +197,31 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
     () => faculty.attendance.filter((a) => a.status === "Absent").length,
     [faculty],
   );
+  const leaveCount = useMemo(
+    () => faculty.attendance.filter((a) => a.status === "On Leave").length,
+    [faculty],
+  );
+  const pieData = useMemo(
+    () => [
+      { name: "Present", value: presentCount },
+      { name: "Absent", value: absentCount },
+      { name: "On Leave", value: leaveCount },
+    ],
+    [presentCount, absentCount, leaveCount],
+  );
+  const barData = useMemo(
+    () =>
+      faculty.attendance
+        .slice()
+        .reverse()
+        .map((r) => ({
+          d: r.date.slice(5),
+          Present: r.status === "Present" ? 1 : 0,
+          Absent: r.status === "Absent" ? 1 : 0,
+          OnLeave: r.status === "On Leave" ? 1 : 0,
+        })),
+    [faculty],
+  );
   return (
     <Card className="group overflow-hidden">
       <CardContent className="p-4">
@@ -236,7 +262,41 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
           )}
         </div>
         {open && (
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-lg border bg-card p-3">
+                <h5 className="text-sm font-medium mb-2">Attendance Breakdown</h5>
+                <div className="h-48">
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={70} paddingAngle={2}>
+                        <Cell fill="#10B981" />
+                        <Cell fill="#EF4444" />
+                        <Cell fill="#F59E0B" />
+                      </Pie>
+                      <Legend verticalAlign="bottom" height={24} />
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="rounded-lg border bg-card p-3">
+                <h5 className="text-sm font-medium mb-2">Last 14 days</h5>
+                <div className="h-48">
+                  <ResponsiveContainer>
+                    <BarChart data={barData}>
+                      <XAxis dataKey="d" tick={{ fontSize: 10 }} />
+                      <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="Present" stackId="a" fill="#10B981" name="Present" />
+                      <Bar dataKey="Absent" stackId="a" fill="#EF4444" name="Absent" />
+                      <Bar dataKey="OnLeave" stackId="a" fill="#F59E0B" name="On Leave" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <CalendarDays className="h-4 w-4" />
               Last 14 days
