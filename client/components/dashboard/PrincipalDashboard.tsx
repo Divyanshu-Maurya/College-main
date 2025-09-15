@@ -386,9 +386,9 @@ function DepartmentCard({
 
 export default function PrincipalDashboard() {
   const departments = useMemo(() => sampleData(), []);
-  const [selectedDept, setSelectedDept] = useState<string>("all");
+  const [selectedDept, setSelectedDept] = useState<string>(departments[0]?.id ?? "");
   const filteredDepartments = useMemo(
-    () => (selectedDept === "all" ? departments : departments.filter((d) => d.id === selectedDept)),
+    () => departments.filter((d) => d.id === selectedDept),
     [departments, selectedDept],
   );
 
@@ -449,7 +449,6 @@ export default function PrincipalDashboard() {
               <SelectValue placeholder="Select department" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Departments</SelectItem>
               {departments.map((d) => (
                 <SelectItem key={d.id} value={d.id}>
                   {d.name}
