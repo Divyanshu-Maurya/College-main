@@ -181,7 +181,7 @@ function AttendanceTable({ records }: { records: AttendanceRecord[] }) {
   );
 }
 
-function FacultyCard({ faculty, open: controlledOpen, onOpenChange }: { faculty: FacultyMember; open?: boolean; onOpenChange?: (open: boolean) => void }) {
+function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle = true }: { faculty: FacultyMember; open?: boolean; onOpenChange?: (open: boolean) => void; showToggle?: boolean }) {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen ?? internalOpen;
   const toggle = () => {
@@ -215,23 +215,25 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange }: { faculty:
               </Pill>
             </div>
           </div>
-          <Button
-            variant="secondary"
-            size="icon"
-            aria-expanded={open}
-            aria-label={open ? "Hide attendance" : "Show attendance"}
-            onClick={toggle}
-            className={cn(
-              "shrink-0 rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 hover:from-violet-500/20 hover:to-indigo-500/20 border-0",
-            )}
-          >
-            <Plus
+          {showToggle && (
+            <Button
+              variant="secondary"
+              size="icon"
+              aria-expanded={open}
+              aria-label={open ? "Hide attendance" : "Show attendance"}
+              onClick={toggle}
               className={cn(
-                "h-5 w-5 text-indigo-600 transition-transform",
-                open && "rotate-45",
+                "shrink-0 rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 hover:from-violet-500/20 hover:to-indigo-500/20 border-0",
               )}
-            />
-          </Button>
+            >
+              <Plus
+                className={cn(
+                  "h-5 w-5 text-indigo-600 transition-transform",
+                  open && "rotate-45",
+                )}
+              />
+            </Button>
+          )}
         </div>
         {open && (
           <div className="mt-4 space-y-3">
@@ -249,7 +251,6 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange }: { faculty:
 
 function HODCard({ hod }: { hod: HOD }) {
   const [open, setOpen] = useState(false);
-  const [openFacultyId, setOpenFacultyId] = useState<string | null>(null);
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-4">
@@ -271,11 +272,7 @@ function HODCard({ hod }: { hod: HOD }) {
             size="icon"
             aria-expanded={open}
             aria-label={open ? "Hide faculty" : "Show faculty"}
-            onClick={() => setOpen((v) => {
-              const nv = !v;
-              if (!nv) setOpenFacultyId(null);
-              return nv;
-            })}
+            onClick={() => setOpen((v) => !v)}
             className="rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border-0"
           >
             <Plus
@@ -291,15 +288,15 @@ function HODCard({ hod }: { hod: HOD }) {
             <SectionHeader
               icon={UserRound}
               title="Faculty"
-              subtitle="Tap + to view attendance details"
+              subtitle="All faculty expanded"
             />
             <div className="flex flex-col gap-4">
               {hod.faculties.map((f) => (
                 <FacultyCard
                   key={f.id}
                   faculty={f}
-                  open={openFacultyId === f.id}
-                  onOpenChange={(next) => setOpenFacultyId(next ? f.id : null)}
+                  open={true}
+                  showToggle={false}
                 />
               ))}
             </div>
