@@ -251,6 +251,7 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
 
 function HODCard({ hod }: { hod: HOD }) {
   const [open, setOpen] = useState(false);
+  const [openFacultyId, setOpenFacultyId] = useState<string | null>(null);
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-4">
@@ -272,7 +273,11 @@ function HODCard({ hod }: { hod: HOD }) {
             size="icon"
             aria-expanded={open}
             aria-label={open ? "Hide faculty" : "Show faculty"}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen((v) => {
+              const nv = !v;
+              if (!nv) setOpenFacultyId(null);
+              return nv;
+            })}
             className="rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border-0"
           >
             <Plus
@@ -288,15 +293,15 @@ function HODCard({ hod }: { hod: HOD }) {
             <SectionHeader
               icon={UserRound}
               title="Faculty"
-              subtitle="All faculty expanded"
+              subtitle="Tap + to view attendance details"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {hod.faculties.map((f) => (
                 <FacultyCard
                   key={f.id}
                   faculty={f}
-                  open={true}
-                  showToggle={false}
+                  open={openFacultyId === f.id}
+                  onOpenChange={(next) => setOpenFacultyId(next ? f.id : null)}
                 />
               ))}
             </div>
