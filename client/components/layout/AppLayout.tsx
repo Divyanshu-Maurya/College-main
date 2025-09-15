@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 w-full backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 shadow-lg shadow-indigo-200" />
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-red-500 to-rose-500 shadow-lg shadow-red-200" />
             <div>
               <p className="text-sm text-muted-foreground leading-none">
                 Principal

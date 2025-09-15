@@ -20,7 +20,7 @@ const NotFound = () => {
         </p>
         <a
           href="/"
-          className="text-indigo-600 hover:text-indigo-700 underline font-medium"
+          className="text-red-600 hover:text-red-700 underline font-medium"
         >
           Return to Home
         </a>
