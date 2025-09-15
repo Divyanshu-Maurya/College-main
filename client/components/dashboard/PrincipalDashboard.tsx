@@ -11,9 +11,26 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 // Data types
 export interface AttendanceRecord {
@@ -182,7 +199,17 @@ function AttendanceTable({ records }: { records: AttendanceRecord[] }) {
   );
 }
 
-function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle = true }: { faculty: FacultyMember; open?: boolean; onOpenChange?: (open: boolean) => void; showToggle?: boolean }) {
+function FacultyCard({
+  faculty,
+  open: controlledOpen,
+  onOpenChange,
+  showToggle = true,
+}: {
+  faculty: FacultyMember;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showToggle?: boolean;
+}) {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen ?? internalOpen;
   const toggle = () => {
@@ -265,11 +292,20 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
           <div className="mt-4 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="rounded-lg border bg-card p-3">
-                <h5 className="text-sm font-medium mb-2">Attendance Breakdown</h5>
+                <h5 className="text-sm font-medium mb-2">
+                  Attendance Breakdown
+                </h5>
                 <div className="h-48">
                   <ResponsiveContainer>
                     <PieChart>
-                      <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={70} paddingAngle={2}>
+                      <Pie
+                        data={pieData}
+                        dataKey="value"
+                        nameKey="name"
+                        innerRadius={40}
+                        outerRadius={70}
+                        paddingAngle={2}
+                      >
                         <Cell fill="#10B981" />
                         <Cell fill="#EF4444" />
                         <Cell fill="#F59E0B" />
@@ -289,9 +325,24 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
                       <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="Present" stackId="a" fill="#10B981" name="Present" />
-                      <Bar dataKey="Absent" stackId="a" fill="#EF4444" name="Absent" />
-                      <Bar dataKey="OnLeave" stackId="a" fill="#F59E0B" name="On Leave" />
+                      <Bar
+                        dataKey="Present"
+                        stackId="a"
+                        fill="#10B981"
+                        name="Present"
+                      />
+                      <Bar
+                        dataKey="Absent"
+                        stackId="a"
+                        fill="#EF4444"
+                        name="Absent"
+                      />
+                      <Bar
+                        dataKey="OnLeave"
+                        stackId="a"
+                        fill="#F59E0B"
+                        name="On Leave"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -327,10 +378,17 @@ function HODCard({ hod }: { hod: HOD }) {
     ];
   }, [hod]);
   const hodBarData = useMemo(() => {
-    const byDate = new Map<string, { Present: number; Absent: number; OnLeave: number }>();
+    const byDate = new Map<
+      string,
+      { Present: number; Absent: number; OnLeave: number }
+    >();
     for (const f of hod.faculties) {
       for (const r of f.attendance) {
-        const entry = byDate.get(r.date) ?? { Present: 0, Absent: 0, OnLeave: 0 };
+        const entry = byDate.get(r.date) ?? {
+          Present: 0,
+          Absent: 0,
+          OnLeave: 0,
+        };
         if (r.status === "Present") entry.Present += 1;
         else if (r.status === "Absent") entry.Absent += 1;
         else entry.OnLeave += 1;
@@ -362,11 +420,13 @@ function HODCard({ hod }: { hod: HOD }) {
             size="icon"
             aria-expanded={open}
             aria-label={open ? "Hide faculty" : "Show faculty"}
-            onClick={() => setOpen((v) => {
-              const nv = !v;
-              if (!nv) setOpenFacultyId(null);
-              return nv;
-            })}
+            onClick={() =>
+              setOpen((v) => {
+                const nv = !v;
+                if (!nv) setOpenFacultyId(null);
+                return nv;
+              })
+            }
             className="rounded-full bg-gradient-to-br from-red-500/10 to-rose-500/10 border-0"
           >
             <Plus
@@ -381,11 +441,20 @@ function HODCard({ hod }: { hod: HOD }) {
           <div className="mt-4 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="rounded-lg border bg-card p-3">
-                <h5 className="text-sm font-medium mb-2">HOD Attendance Breakdown</h5>
+                <h5 className="text-sm font-medium mb-2">
+                  HOD Attendance Breakdown
+                </h5>
                 <div className="h-48">
                   <ResponsiveContainer>
                     <PieChart>
-                      <Pie data={hodPieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={70} paddingAngle={2}>
+                      <Pie
+                        data={hodPieData}
+                        dataKey="value"
+                        nameKey="name"
+                        innerRadius={40}
+                        outerRadius={70}
+                        paddingAngle={2}
+                      >
                         <Cell fill="#10B981" />
                         <Cell fill="#EF4444" />
                         <Cell fill="#F59E0B" />
@@ -397,7 +466,9 @@ function HODCard({ hod }: { hod: HOD }) {
                 </div>
               </div>
               <div className="rounded-lg border bg-card p-3">
-                <h5 className="text-sm font-medium mb-2">Last 14 days (All Faculty)</h5>
+                <h5 className="text-sm font-medium mb-2">
+                  Last 14 days (All Faculty)
+                </h5>
                 <div className="h-48">
                   <ResponsiveContainer>
                     <BarChart data={hodBarData}>
@@ -405,9 +476,24 @@ function HODCard({ hod }: { hod: HOD }) {
                       <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="Present" stackId="a" fill="#10B981" name="Present" />
-                      <Bar dataKey="Absent" stackId="a" fill="#EF4444" name="Absent" />
-                      <Bar dataKey="OnLeave" stackId="a" fill="#F59E0B" name="On Leave" />
+                      <Bar
+                        dataKey="Present"
+                        stackId="a"
+                        fill="#10B981"
+                        name="Present"
+                      />
+                      <Bar
+                        dataKey="Absent"
+                        stackId="a"
+                        fill="#EF4444"
+                        name="Absent"
+                      />
+                      <Bar
+                        dataKey="OnLeave"
+                        stackId="a"
+                        fill="#F59E0B"
+                        name="On Leave"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -454,7 +540,9 @@ function DepartmentCard({
     onOpenChange ? onOpenChange(!isOpen) : setInternalOpen((v) => !v);
 
   const deptPieData = useMemo(() => {
-    const all = dept.hods.flatMap((h) => h.faculties.flatMap((f) => f.attendance));
+    const all = dept.hods.flatMap((h) =>
+      h.faculties.flatMap((f) => f.attendance),
+    );
     const counts = { Present: 0, Absent: 0, OnLeave: 0 };
     for (const r of all) {
       if (r.status === "Present") counts.Present++;
@@ -469,11 +557,18 @@ function DepartmentCard({
   }, [dept]);
 
   const deptBarData = useMemo(() => {
-    const byDate = new Map<string, { Present: number; Absent: number; OnLeave: number }>();
+    const byDate = new Map<
+      string,
+      { Present: number; Absent: number; OnLeave: number }
+    >();
     for (const h of dept.hods) {
       for (const f of h.faculties) {
         for (const r of f.attendance) {
-          const entry = byDate.get(r.date) ?? { Present: 0, Absent: 0, OnLeave: 0 };
+          const entry = byDate.get(r.date) ?? {
+            Present: 0,
+            Absent: 0,
+            OnLeave: 0,
+          };
           if (r.status === "Present") entry.Present += 1;
           else if (r.status === "Absent") entry.Absent += 1;
           else entry.OnLeave += 1;
@@ -527,11 +622,20 @@ function DepartmentCard({
           <div className="mt-5 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="rounded-lg border bg-card p-3">
-                <h5 className="text-sm font-medium mb-2">Department Attendance Breakdown</h5>
+                <h5 className="text-sm font-medium mb-2">
+                  Department Attendance Breakdown
+                </h5>
                 <div className="h-48">
                   <ResponsiveContainer>
                     <PieChart>
-                      <Pie data={deptPieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={70} paddingAngle={2}>
+                      <Pie
+                        data={deptPieData}
+                        dataKey="value"
+                        nameKey="name"
+                        innerRadius={40}
+                        outerRadius={70}
+                        paddingAngle={2}
+                      >
                         <Cell fill="#10B981" />
                         <Cell fill="#EF4444" />
                         <Cell fill="#F59E0B" />
@@ -543,7 +647,9 @@ function DepartmentCard({
                 </div>
               </div>
               <div className="rounded-lg border bg-card p-3">
-                <h5 className="text-sm font-medium mb-2">Last 14 days (All HODs)</h5>
+                <h5 className="text-sm font-medium mb-2">
+                  Last 14 days (All HODs)
+                </h5>
                 <div className="h-48">
                   <ResponsiveContainer>
                     <BarChart data={deptBarData}>
@@ -551,9 +657,24 @@ function DepartmentCard({
                       <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="Present" stackId="a" fill="#10B981" name="Present" />
-                      <Bar dataKey="Absent" stackId="a" fill="#EF4444" name="Absent" />
-                      <Bar dataKey="OnLeave" stackId="a" fill="#F59E0B" name="On Leave" />
+                      <Bar
+                        dataKey="Present"
+                        stackId="a"
+                        fill="#10B981"
+                        name="Present"
+                      />
+                      <Bar
+                        dataKey="Absent"
+                        stackId="a"
+                        fill="#EF4444"
+                        name="Absent"
+                      />
+                      <Bar
+                        dataKey="OnLeave"
+                        stackId="a"
+                        fill="#F59E0B"
+                        name="On Leave"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -578,7 +699,9 @@ function DepartmentCard({
 
 export default function PrincipalDashboard() {
   const departments = useMemo(() => sampleData(), []);
-  const [selectedDept, setSelectedDept] = useState<string>(departments[0]?.id ?? "");
+  const [selectedDept, setSelectedDept] = useState<string>(
+    departments[0]?.id ?? "",
+  );
   const filteredDepartments = useMemo(
     () => departments.filter((d) => d.id === selectedDept),
     [departments, selectedDept],
