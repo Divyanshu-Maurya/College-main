@@ -353,7 +353,7 @@ function DepartmentCard({
               title="Heads of Department"
               subtitle="Tap + to view faculty"
             />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-4">
               {dept.hods.map((h) => (
                 <HODCard key={h.id} hod={h} />
               ))}
