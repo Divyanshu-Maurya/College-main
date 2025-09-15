@@ -453,6 +453,39 @@ function DepartmentCard({
   const toggle = () =>
     onOpenChange ? onOpenChange(!isOpen) : setInternalOpen((v) => !v);
 
+  const deptPieData = useMemo(() => {
+    const all = dept.hods.flatMap((h) => h.faculties.flatMap((f) => f.attendance));
+    const counts = { Present: 0, Absent: 0, OnLeave: 0 };
+    for (const r of all) {
+      if (r.status === "Present") counts.Present++;
+      else if (r.status === "Absent") counts.Absent++;
+      else counts.OnLeave++;
+    }
+    return [
+      { name: "Present", value: counts.Present },
+      { name: "Absent", value: counts.Absent },
+      { name: "On Leave", value: counts.OnLeave },
+    ];
+  }, [dept]);
+
+  const deptBarData = useMemo(() => {
+    const byDate = new Map<string, { Present: number; Absent: number; OnLeave: number }>();
+    for (const h of dept.hods) {
+      for (const f of h.faculties) {
+        for (const r of f.attendance) {
+          const entry = byDate.get(r.date) ?? { Present: 0, Absent: 0, OnLeave: 0 };
+          if (r.status === "Present") entry.Present += 1;
+          else if (r.status === "Absent") entry.Absent += 1;
+          else entry.OnLeave += 1;
+          byDate.set(r.date, entry);
+        }
+      }
+    }
+    return Array.from(byDate.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([date, v]) => ({ d: date.slice(5), ...v }));
+  }, [dept]);
+
   return (
     <Card
       className={cn(
@@ -491,7 +524,41 @@ function DepartmentCard({
           </Button>
         </div>
         {isOpen && (
-          <div className="mt-5">
+          <div className="mt-5 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-lg border bg-card p-3">
+                <h5 className="text-sm font-medium mb-2">Department Attendance Breakdown</h5>
+                <div className="h-48">
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie data={deptPieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={70} paddingAngle={2}>
+                        <Cell fill="#10B981" />
+                        <Cell fill="#EF4444" />
+                        <Cell fill="#F59E0B" />
+                      </Pie>
+                      <Legend verticalAlign="bottom" height={24} />
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="rounded-lg border bg-card p-3">
+                <h5 className="text-sm font-medium mb-2">Last 14 days (All HODs)</h5>
+                <div className="h-48">
+                  <ResponsiveContainer>
+                    <BarChart data={deptBarData}>
+                      <XAxis dataKey="d" tick={{ fontSize: 10 }} />
+                      <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="Present" stackId="a" fill="#10B981" name="Present" />
+                      <Bar dataKey="Absent" stackId="a" fill="#EF4444" name="Absent" />
+                      <Bar dataKey="OnLeave" stackId="a" fill="#F59E0B" name="On Leave" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
             <SectionHeader
               icon={Users}
               title="Heads of Department"
