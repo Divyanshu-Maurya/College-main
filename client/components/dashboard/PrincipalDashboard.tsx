@@ -177,8 +177,13 @@ function AttendanceTable({ records }: { records: AttendanceRecord[] }) {
   );
 }
 
-function FacultyCard({ faculty }: { faculty: FacultyMember }) {
-  const [open, setOpen] = useState(false);
+function FacultyCard({ faculty, open: controlledOpen, onOpenChange }: { faculty: FacultyMember; open?: boolean; onOpenChange?: (open: boolean) => void }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const toggle = () => {
+    if (onOpenChange) onOpenChange(!open);
+    else setInternalOpen((v) => !v);
+  };
   const presentCount = useMemo(
     () => faculty.attendance.filter((a) => a.status === "Present").length,
     [faculty],
@@ -211,7 +216,7 @@ function FacultyCard({ faculty }: { faculty: FacultyMember }) {
             size="icon"
             aria-expanded={open}
             aria-label={open ? "Hide attendance" : "Show attendance"}
-            onClick={() => setOpen((v) => !v)}
+            onClick={toggle}
             className={cn(
               "shrink-0 rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 hover:from-violet-500/20 hover:to-indigo-500/20 border-0",
             )}
@@ -240,6 +245,7 @@ function FacultyCard({ faculty }: { faculty: FacultyMember }) {
 
 function HODCard({ hod }: { hod: HOD }) {
   const [open, setOpen] = useState(false);
+  const [openFacultyId, setOpenFacultyId] = useState<string | null>(null);
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-4">
@@ -261,7 +267,11 @@ function HODCard({ hod }: { hod: HOD }) {
             size="icon"
             aria-expanded={open}
             aria-label={open ? "Hide faculty" : "Show faculty"}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen((v) => {
+              const nv = !v;
+              if (!nv) setOpenFacultyId(null);
+              return nv;
+            })}
             className="rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border-0"
           >
             <Plus
@@ -281,7 +291,12 @@ function HODCard({ hod }: { hod: HOD }) {
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {hod.faculties.map((f) => (
-                <FacultyCard key={f.id} faculty={f} />
+                <FacultyCard
+                  key={f.id}
+                  faculty={f}
+                  open={openFacultyId === f.id}
+                  onOpenChange={(next) => setOpenFacultyId(next ? f.id : null)}
+                />
               ))}
             </div>
           </div>
