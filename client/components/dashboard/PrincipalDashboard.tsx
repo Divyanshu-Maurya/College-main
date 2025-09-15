@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 // Data types
@@ -58,6 +59,9 @@ function generateAttendance(days = 14): AttendanceRecord[] {
 function sampleData(): Department[] {
   const depts = [
     { id: "cse", name: "Computer Science & Engineering", code: "CSE" },
+    { id: "ece", name: "Electronics & Communication Engineering", code: "ECE" },
+    { id: "me", name: "Mechanical Engineering", code: "ME" },
+    { id: "ce", name: "Civil Engineering", code: "CE" },
   ];
 
   return depts.map((d, idx) => {
@@ -382,6 +386,11 @@ function DepartmentCard({
 
 export default function PrincipalDashboard() {
   const departments = useMemo(() => sampleData(), []);
+  const [selectedDept, setSelectedDept] = useState<string>("all");
+  const filteredDepartments = useMemo(
+    () => (selectedDept === "all" ? departments : departments.filter((d) => d.id === selectedDept)),
+    [departments, selectedDept],
+  );
 
   return (
     <div className="space-y-8">
@@ -427,16 +436,32 @@ export default function PrincipalDashboard() {
         </Card>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <SectionHeader
           icon={Building2}
           title="Departments"
           subtitle="Tap + on a department to view HOD"
         />
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Filter</span>
+          <Select value={selectedDept} onValueChange={setSelectedDept}>
+            <SelectTrigger className="w-60">
+              <SelectValue placeholder="Select department" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Departments</SelectItem>
+              {departments.map((d) => (
+                <SelectItem key={d.id} value={d.id}>
+                  {d.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
-        {departments.map((dept) => (
+        {filteredDepartments.map((dept) => (
           <DepartmentCard key={dept.id} dept={dept} defaultOpen selected />
         ))}
       </div>
