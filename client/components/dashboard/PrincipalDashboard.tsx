@@ -126,7 +126,7 @@ function SectionHeader({
   return (
     <div className="flex items-end justify-between mb-4">
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 text-white flex items-center justify-center shadow-md">
+        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-rose-500 text-white flex items-center justify-center shadow-md">
           <Icon className="h-5 w-5" />
         </div>
         <div>
@@ -228,7 +228,7 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <UserRound className="h-4 w-4 text-indigo-500" />
+              <UserRound className="h-4 w-4 text-red-500" />
               <h4 className="font-medium leading-tight">{faculty.name}</h4>
             </div>
             <p className="text-xs text-muted-foreground mt-1">{faculty.role}</p>
@@ -249,12 +249,12 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
               aria-label={open ? "Hide attendance" : "Show attendance"}
               onClick={toggle}
               className={cn(
-                "shrink-0 rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 hover:from-violet-500/20 hover:to-indigo-500/20 border-0",
+                "shrink-0 rounded-full bg-gradient-to-br from-red-500/10 to-rose-500/10 hover:from-red-500/20 hover:to-rose-500/20 border-0",
               )}
             >
               <Plus
                 className={cn(
-                  "h-5 w-5 text-indigo-600 transition-transform",
+                  "h-5 w-5 text-red-600 transition-transform",
                   open && "rotate-45",
                 )}
               />
@@ -346,7 +346,7 @@ function HODCard({ hod }: { hod: HOD }) {
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-indigo-500" />
+            <Users className="h-4 w-4 text-red-500" />
             <div>
               <h4 className="font-medium leading-tight">{hod.name}</h4>
               <p className="text-xs text-muted-foreground">
@@ -367,11 +367,11 @@ function HODCard({ hod }: { hod: HOD }) {
               if (!nv) setOpenFacultyId(null);
               return nv;
             })}
-            className="rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border-0"
+            className="rounded-full bg-gradient-to-br from-red-500/10 to-rose-500/10 border-0"
           >
             <Plus
               className={cn(
-                "h-5 w-5 text-indigo-600 transition-transform",
+                "h-5 w-5 text-red-600 transition-transform",
                 open && "rotate-45",
               )}
             />
@@ -490,13 +490,13 @@ function DepartmentCard({
     <Card
       className={cn(
         "overflow-hidden",
-        selected && "ring-2 ring-indigo-200 border-indigo-200",
+        selected && "ring-2 ring-red-200 border-red-200",
       )}
     >
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white grid place-items-center">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-rose-500 text-white grid place-items-center">
               <Building2 className="h-5 w-5" />
             </div>
             <div>
@@ -513,11 +513,11 @@ function DepartmentCard({
             aria-expanded={isOpen}
             aria-label={isOpen ? "Hide HOD" : "Show HOD"}
             onClick={toggle}
-            className="rounded-full bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border-0"
+            className="rounded-full bg-gradient-to-br from-red-500/10 to-rose-500/10 border-0"
           >
             <Plus
               className={cn(
-                "h-5 w-5 text-indigo-600 transition-transform",
+                "h-5 w-5 text-red-600 transition-transform",
                 isOpen && "rotate-45",
               )}
             />
