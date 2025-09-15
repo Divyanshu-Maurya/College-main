@@ -312,6 +312,35 @@ function FacultyCard({ faculty, open: controlledOpen, onOpenChange, showToggle =
 function HODCard({ hod }: { hod: HOD }) {
   const [open, setOpen] = useState(false);
   const [openFacultyId, setOpenFacultyId] = useState<string | null>(null);
+  const hodPieData = useMemo(() => {
+    const all = hod.faculties.flatMap((f) => f.attendance);
+    const counts = { Present: 0, Absent: 0, OnLeave: 0 };
+    for (const r of all) {
+      if (r.status === "Present") counts.Present++;
+      else if (r.status === "Absent") counts.Absent++;
+      else counts.OnLeave++;
+    }
+    return [
+      { name: "Present", value: counts.Present },
+      { name: "Absent", value: counts.Absent },
+      { name: "On Leave", value: counts.OnLeave },
+    ];
+  }, [hod]);
+  const hodBarData = useMemo(() => {
+    const byDate = new Map<string, { Present: number; Absent: number; OnLeave: number }>();
+    for (const f of hod.faculties) {
+      for (const r of f.attendance) {
+        const entry = byDate.get(r.date) ?? { Present: 0, Absent: 0, OnLeave: 0 };
+        if (r.status === "Present") entry.Present += 1;
+        else if (r.status === "Absent") entry.Absent += 1;
+        else entry.OnLeave += 1;
+        byDate.set(r.date, entry);
+      }
+    }
+    return Array.from(byDate.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([date, v]) => ({ d: date.slice(5), ...v }));
+  }, [hod]);
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-4">
@@ -349,7 +378,41 @@ function HODCard({ hod }: { hod: HOD }) {
           </Button>
         </div>
         {open && (
-          <div className="mt-4">
+          <div className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-lg border bg-card p-3">
+                <h5 className="text-sm font-medium mb-2">HOD Attendance Breakdown</h5>
+                <div className="h-48">
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie data={hodPieData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={70} paddingAngle={2}>
+                        <Cell fill="#10B981" />
+                        <Cell fill="#EF4444" />
+                        <Cell fill="#F59E0B" />
+                      </Pie>
+                      <Legend verticalAlign="bottom" height={24} />
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="rounded-lg border bg-card p-3">
+                <h5 className="text-sm font-medium mb-2">Last 14 days (All Faculty)</h5>
+                <div className="h-48">
+                  <ResponsiveContainer>
+                    <BarChart data={hodBarData}>
+                      <XAxis dataKey="d" tick={{ fontSize: 10 }} />
+                      <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="Present" stackId="a" fill="#10B981" name="Present" />
+                      <Bar dataKey="Absent" stackId="a" fill="#EF4444" name="Absent" />
+                      <Bar dataKey="OnLeave" stackId="a" fill="#F59E0B" name="On Leave" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
             <SectionHeader
               icon={UserRound}
               title="Faculty"
